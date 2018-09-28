@@ -1,0 +1,23 @@
+---
+- name: Initiate master node
+  command: >
+    kubeadm init
+    --token {{ admission_token }}
+    --token-ttl 0
+    --pod-network-cidr 10.244.0.0/16
+    --apiserver-advertise-address {{ apiserver_advertise_address }}
+  args:
+    creates: /etc/kubernetes/admin.conf
+
+# - name: Install Flannel network plugin
+#   k8s:
+#     kubeconfig: /etc/kubernetes/admin.conf
+#     src: https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
+
+# Considered non-idempotent by Ansible
+# TODO: Make Ansible understand that it is idempotent.
+- name: Install Flannel network plugin
+  command: >
+    kubectl apply
+    --kubeconfig /etc/kubernetes/admin.conf
+    --filename https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
