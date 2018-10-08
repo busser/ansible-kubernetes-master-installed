@@ -7,10 +7,6 @@
   args:
     creates: /etc/kubernetes/admin.conf
 
-# - name: Install Flannel network plugin
-#   k8s:
-#     kubeconfig: /etc/kubernetes/admin.conf
-#     src: https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
 - name: Create admission token
   command: kubeadm token create
   register: kubeadm_token_create
