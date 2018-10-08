@@ -2,8 +2,6 @@
 - name: Initiate master node
   command: >
     kubeadm init
-    --token {{ admission_token }}
-    --token-ttl 0
     --pod-network-cidr 10.244.0.0/16
     --apiserver-advertise-address {{ apiserver_advertise_address }}
   args:
@@ -13,6 +11,13 @@
 #   k8s:
 #     kubeconfig: /etc/kubernetes/admin.conf
 #     src: https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
+- name: Create admission token
+  command: kubeadm token create
+  register: kubeadm_token_create
+
+- name: Save admission token as fact
+  set_fact:
+    admission_token: "{{ kubeadm_token_create.stdout }}"
 
 # Considered non-idempotent by Ansible
 # TODO: Make Ansible understand that it is idempotent.
