@@ -26,3 +26,12 @@
     kubectl apply
     --kubeconfig /etc/kubernetes/admin.conf
     --filename https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
+
+- name: Get kubectl configuration
+  command: cat /etc/kubernetes/admin.conf
+  register: kubectl_config
+  changed_when: False
+
+- name: Save kubectl configuration as fact
+  set_fact:
+    kubeconfig: "{{ kubectl_config.stdout }}"
